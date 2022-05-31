@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+    Home Page
+{% endblock %}
+
+{% block content %}
+
+    <div class="img-container">
+        <img src="{{url_for('static', filename='logo.png')}}" width="300" height="350" align="middle" />
+    </div>
+    
+    <div class="about">
+        <h2>About Us</h2>
+        <p>
+            Our organization has been operating for over 20 years. We specialize in providing healthcare services,
+            patient diagnosis, laboratory tests, and pharmaceutical products. Our premium doctors are available 24/7 for consultation and clinical tests.
+        </p>
+    </div>
+    
+    <div class="locations">
+        <h2>Our Branches</h2>
+        <p>
+            We are currently operating in 5 countries: Pakistan, India, Malaysia, Indonesia and Saudi Arabia. For more
+            information regarding our branches, call us at our helpline.
+        </p>
+    </div>
+    
+    
+    
+{% endblock %}
+
+
