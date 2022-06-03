@@ -1,8 +1,13 @@
 # from multiprocessing import connection
-from flask import Flask, render_template, request, redirect, flash, url_for
+from flask import Flask, render_template, request, redirect, session,flash, url_for
+from flask_session import Session
 import pyodbc
 # from model import cursor,conn
 app = Flask(__name__)
+
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 app.config['SECRET_KEY'] = '65d7a2d001a0a36fd0f4047d'
 
@@ -105,6 +110,8 @@ def login_doctor():
             cursor.execute(sql, params)
             return_value = cursor.fetchval()
 
+
+
         except:
             flash("Please enter a valid username or password and try again")
             return redirect('/login_doctor')  
@@ -115,6 +122,7 @@ def login_doctor():
         print(return_value)
        
         if(return_value == 1):
+            # session["userid"] = request.form.get("userid") #added ------------------------------
             return render_template('doctor.html') 
 
 
@@ -148,6 +156,7 @@ def login_patient():
         # print(return_value)
 
         if(return_value == 1):
+            session["userid"] = request.form.get("userid")
             return render_template('patient.html') 
 
 
@@ -215,25 +224,31 @@ def login_admin():
 
 @app.route('/EHR', methods = ['GET','POST'])
 def ehr_patient():
-    items = []
-    if request.method == 'GET':
-        return render_template("EHR.html")
-    if request.method == 'POST':
-        userid = int(request.form["userid"])
-        sql = """\
-                exec patient_EHR @patient_id = ?
-                """
 
-        params = (userid)
-        conn = connection()
-        cursor = conn.cursor()    
-        cursor.execute(sql, params)
+    if not session.get("userid"):
+        # if not there in the session then redirect to the login page
+        return redirect("/login_patient")
     
-        for row in cursor.fetchall():
-            items.append({"patient_id":row[0], "diagnosis":row[1], "testID":row[2], "medicineNo":row[3]})
+    else:
+        items = []
+        if request.method == 'GET':
+            return render_template("EHR.html")
+        if request.method == 'POST':
+            userid = int(request.form["userid"])
+            sql = """\
+                    exec patient_EHR @patient_id = ?
+                    """
 
-        conn.close()
-    return render_template('EHR.html', items = items) 
+            params = (userid)
+            conn = connection()
+            cursor = conn.cursor()    
+            cursor.execute(sql, params)
+        
+            for row in cursor.fetchall():
+                items.append({"patient_id":row[0], "diagnosis":row[1], "testID":row[2], "medicineNo":row[3]})
+
+            conn.close()
+        return render_template('EHR.html', items = items) 
 
 
 @app.route('/EHR_input', methods = ['GET','POST'])    
@@ -451,6 +466,7 @@ def remove_medicine():
 
 @app.route('/order_labtest', methods = ['GET','POST'])
 def order_labtest():
+
     if request.method == 'GET':
         return render_template("order_labtest.html")
     if request.method == 'POST':
@@ -649,12 +665,102 @@ def remove_admin():
         return redirect('/remove_admin') 
 
 
+#####################                   patient fucntions                       ########################### 
+@app.route('/viewdoctors',methods = ['GET'])
+def viewdoctors():
+     if request.method == 'GET':
+        try:
+            items = []
+            conn = connection()
+            cursor = conn.cursor()
+            cursor.execute('exec PatientViewDoctor')  
+
+            for row in cursor.fetchall():
+                items.append({"id":row[0], "name":row[1], "age":row[2], "timings":row[3], "email":row[4], "departmentName":row[5], "roomNo":row[6]})
+       
+        except:
+            flash('Error in connection')
+            conn.close()  
+            return redirect('/viewdoctors')
+
+        conn.close()
+        return render_template('viewdoctors.html', items = items) 
 
 
+
+@app.route('/rate_doctor',methods = ['GET','POST'])
+def rate_doctor():
+    if request.method == 'GET':
+        try:
+            items = []
+            conn = connection()
+            cursor = conn.cursor()
+            cursor.execute('exec RatingDocs')  
+
+            for row in cursor.fetchall():
+                items.append({"id":row[0], "Rating":row[1]})
+        except:
+            flash('Error in connection')
+            conn.close()  
+            return redirect('/rate_doctor')
+
+        conn.close()
+        return render_template('rate_doctor.html', items = items) 
+
+
+    if request.method == 'POST':
+        try:
+            id = int(request.form["id"])
+            rating = float(request.form["rating"])
+            params = (id, rating)    
+            conn1 = connection()
+            cursor1 = conn1.cursor()
+
+            sql = """\
+            DECLARE @out int;
+            exec Rate_doctors @doctorid = ?, @rating = ?, @flag = @out output
+            SELECT @out AS return_value
+            """
+
+            cursor1.execute(sql, (params))
+       
+        except:
+            flash("Error enter valid enteries please try again")
+            return redirect('/rate_doctor')
+
+        conn1.commit()
+        conn1.close()
+        flash("Rating Successfully Added")
+        return redirect('/rate_doctor')
+
+
+@app.route('/premiumdoctors')
+def premiumdoctors():
+    if request.method == 'GET':
+        try:
+            items = []
+            conn = connection()
+            cursor = conn.cursor()
+            cursor.execute('exec PremiumDocs')  
+
+            for row in cursor.fetchall():
+                items.append({"docID":row[0], "docname":row[1], "Rating":row[2]})
+       
+        except:
+            flash('Error in connection')
+            conn.close()  
+            return redirect('/premiumdoctors')
+
+        conn.close()
+        return render_template('premiumdoctors.html', items = items) 
 
 @app.route('/patient')
 def patient_menu():
     return render_template('patient.html')
+
+@app.route('/logout')
+def logout():
+     return redirect('/')
 
 
 
