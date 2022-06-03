@@ -87,6 +87,8 @@ create table [admin]
   password nvarchar not null
 )
 
+alter table [admin] drop column password
+alter table [admin] add password nvarchar(30) 
 create table laboratory
 (
   testID int primary key,
@@ -98,6 +100,34 @@ create table laboratory
   patientID int foreign key references Patient(id) on delete cascade on update cascade
 )
 
+ALTER TABLE laboratory
+ALTER COLUMN testTime nvarchar(30);
+alter table laboratory drop column labNo
+alter table laboratory drop column testDescription
+alter table laboratory drop column amount
+
+
+
+insert into laboratory values (1, 2, 1300, 'sugar test', 'Pending', 3300, 1)
+
+create table viewlab
+(
+  testID int primary key,
+  labNo int not null,
+  testDescription nvarchar(30),
+  amount float,
+)
+
+insert into viewlab values(1, 1, 'RBC', 500)
+insert into viewlab values(2, 3, 'WBC', 1000)
+insert into viewlab values(3, 2, 'kidney', 4000)
+insert into viewlab values(4, 5, 'coroana', 5000)
+insert into viewlab values(1, 1, 'RBC', 500)
+insert into viewlab values(1, 1, 'RBC', 500)
+
+select* from viewlab
+
+
 create table pharmacy
 (
   medicineNo int primary key,
@@ -107,6 +137,16 @@ create table pharmacy
   price float
 )
 
+ALTER TABLE pharmacy
+ALTER COLUMN expiry nvarchar(30);
+
+insert into pharmacy values(1, 'acefyl', '2-2-2024', 30, 5500)
+insert into pharmacy values(2, 'britanil', '24-1-2023', 10, 400)
+insert into pharmacy values(3, 'acefyl', '26-6-2025', 50, 900)
+insert into pharmacy values(4, 'acefyl', '20-8-2022', 15, 2500)
+
+select* from pharmacy
+
 create table Department
 (
 	id int primary key,
@@ -114,6 +154,8 @@ create table Department
 	noOfDoctors int,
 	roomID int foreign key references Rooms(roomID)
 )
+
+insert into Department values(1, 'rad', 2, 6) 
 
 create table Catalogue
 (
@@ -136,26 +178,32 @@ create table EHR
 (
     patientID int foreign key references Patient(id) on delete cascade on update cascade,
 	diagnosis text,
-	testID int foreign key references Laboratory(TestID)
+	testID int foreign key references Laboratory(TestID) default null
 )
 
 alter table EHR
 add medicineNo int foreign key references Pharmacy(medicineNo)
+
+drop table EHR
 
 create table Appointments
 (
 	appointmentID int primary key,
 	doctorID int foreign key references Doctor(id) on delete cascade on update cascade,
 	patientID int foreign key references Patient(id) on delete cascade on update cascade,
-	appointmentTime datetime,
-	doctorName nvarchar,
-	patientName nvarchar,
-	patientPhone nvarchar,
-	department nvarchar,
-	room nvarchar
+	appointmentTime nvarchar(30),
+	patientName nvarchar(30),
+	patientPhone nvarchar(30),
+	departmentid int,
 
 	 unique(doctorID, appointmentTime)
 )
+
+drop table Appointments
+
+
+
+insert into Appointments valueS(1, 1, 2, '1400', 'asad', '4324423434242', 1)
 
 create table ratings
 (
@@ -163,13 +211,18 @@ create table ratings
 	rating float check (rating >= 0 AND rating <=5)
 )
 
--------------insert statements-------------------
+insert into ratings values(1, 5.0)
+insert into ratings values(2, 4.0)
+insert into ratings values(3, 2.0)
+
+
+
 
 select * from Patient 
 
+--------------------------------------------------------------PROCEDURES--------------------------------------------------------------------------
 
-
-
+--------------------------------------------signup and login --------------------------------------------------------------
 create procedure SignupDoctor
 @name varchar(30),
 @cnic varchar(30),
@@ -266,12 +319,12 @@ select @out
 create procedure SignupPatient
 @name varchar(20),
 @cnic nvarchar(30),
-@phno int,
+@phno nvarchar(30),
 @age int,
 @email nvarchar(30),
 @add nvarchar(30),
 @appno int,
-@pass int,
+@pass nvarchar(30),
 @gender char
 as begin
 	declare @id int
@@ -286,43 +339,70 @@ drop procedure SignupPatient
 
 select* from patient
 
+
+exec SignupPatient
+@name = 'momin',
+@cnic = '5476583754435543',
+@phno = '134243243243',
+@age = 12,
+@email = 'momin@gmail.com',
+@add = 'cantt',
+@appno = 14,
+@pass = 'abcdefg',
+@gender = 'M'
+
+select* from patient
+
 --alter table patient add gender char check (gender = 'F' or gender = 'M')
------------------------------------------------------------------procedures not connected---------------------------------------------------------------------------
 --3)
+drop procedure LoginAdmin
+
 create procedure LoginAdmin
-@username nvarchar,
-@password nvarchar
+@username nvarchar(30),
+@password nvarchar(30),
+@flag int output
 as begin
-declare @flag int
-declare @pass nvarchar
-		
+declare @pass nvarchar (15)
+set @flag = 0		
 		select @pass = a.password
-		from admin a
-		where a.name = @username
+		from [admin] a
+		where a.id = @username
 
 		if(@pass = @password)
 		begin
 		set @flag = 1
 		end
 
-		else
+		if (@flag = 0)
 		begin
 		print 'invalid credentials'
 		end
 
 end
-exec LoginAdmin 'ndc','hbdcb'
 
+
+
+declare @out int
+exec LoginAdmin
+@username=1,@password='123456',@flag = @out output
+select @out as return_result
+
+select* from [admin]
 
 
 --6)
+
+drop procedure SignupAdmin
+
+insert into [admin] values (1, 'ahmed', '34657463584357', '74983274932', 30, 'ahmed@gmail.com', '123456')
+
 create procedure SignupAdmin
-@name nvarchar,
-@cnic nvarchar,
-@phno nvarchar,
+@name nvarchar(30),
+@cnic nvarchar(30),
+@phno nvarchar(30),
 @age int,
-@email nvarchar,
-@pass nvarchar
+@email nvarchar(30),
+@pass nvarchar(30)
 as begin
 	declare @id int
 	select @id = max(id) + 1
@@ -331,6 +411,243 @@ as begin
 	insert into [admin] values (@id,@name,@cnic,@phno,@age,@email,@pass);
 end
 
+exec SignupAdmin @name = 'momin', @cnic = '43746384376632', @phno = '054894400540', @age = 10, @email = 'momin@gmail.com', @pass = 'abcd123'
+
+select* from [admin]
+
+
+-------------------------EHR ------------------------------------------
+-- 20)
+	create procedure enterEHR
+	@patid int,
+	@diag text,
+	@testid int = null,
+	@medno int = null
+	as begin
+	insert into EHR values (@patid, @diag, @testid,@medno)
+
+	end
+
+	exec enterEHR @patid = 1, @diag = 'cough', @testid = 1, @medno = 1
+
+	select * from EHR
+
+
+--18)
+create procedure patient_EHR
+ @patient_id int
+ as begin
+
+ select patientID, diagnosis, testID, medicineNo
+ from EHR
+ where EHR.patientID = @patient_id
+
+ end
+
+ exec patient_EHR @patient_id = 1
+
+ drop procedure patient_EHR
+
+ select* from EHR
+
+ ----------------------------------------Appointments----------------------------------------------------
+--13)
+create procedure searchAppointment
+@patientID int
+
+as begin
+select appointmentID, a.patientName,d.name as 'DoctorName', d.departmentName as 'Department', a.appointmentTime   
+from [Appointments] a inner join Doctor d on a.doctorID = d.id
+where @patientID = a.patientID
+end
+
+drop procedure searchAppointment
+
+exec searchAppointment @patientID = 2
+-----------
+--12)
+create procedure makeAppointment
+@patientID int,
+@doctorID int,
+@patientName nvarchar(30),
+@phoneNo nvarchar(30),
+@dept int,
+@time nvarchar(30)
+
+as begin
+declare @appointmentID int
+
+select @appointmentID = max(appointmentID) + 1
+from [Appointments] app
+
+
+insert into [Appointments] values (@appointmentID, @doctorID, @patientID, @time, @patientName, @phoneNo, @dept )
+
+end
+
+select* from Appointments
+select* from Department
+
+exec makeAppointment @patientID = 1, @doctorID = 1, @patientName = 'asad', @phoneNo = '03304256565', @dept = 1, @time = '1500'
+
+drop procedure makeAppointment
+--------------------
+create procedure deleteAppointment
+@id int
+as begin
+
+delete from Appointments 
+where Appointments.appointmentID = @id
+
+end
+
+exec deleteAppointment @id = 3
+
+----------------------
+create procedure viewAppointments
+as begin
+
+select* from Appointments
+
+end
+
+exec viewAppointments
+
+--------------------------laboratory procedures-----------------------------------------
+select * from laboratory
+--1)
+create procedure labTest
+@patientID int,
+@testTime nvarchar(30)
+as begin
+
+declare @testID int
+select @testID = max(testID) + 1
+from [laboratory] lab
+
+insert into [laboratory] values (@testID, @testTime, 'pending', @patientID)
+
+end
+
+exec labTest @patientID = 3, @testTime = '1500'
+
+drop procedure labTest
+
+select* from laboratory
+
+
+--2)
+create procedure viewtests
+as begin
+
+select* from viewlab 
+
+end
+
+exec viewtests
+
+
+--3)
+create procedure addtests
+@labNo int,
+@testDescription nvarchar(30),
+@amount float
+as begin
+
+declare @testID int
+select @testID = max(testID) + 1
+from viewlab lab
+
+insert into viewlab values(@testID, @labNo,@testDescription, @amount)
+
+
+end
+
+exec addtests @labNo = 4, @testDescription = 'LFT', @amount = 3000
+
+drop procedure addtests
+
+select* from viewlab
+
+--4)
+create procedure removetests
+@testid int
+as begin
+
+delete from viewlab 
+where viewlab.testid = @testid
+
+end
+
+exec removetests @testid = 5
+---------------------------------------------Pharmacy procedures-----------------------------------------
+create procedure viewpharmacy
+as begin
+
+select* from pharmacy
+end
+
+exec viewpharmacy
+
+----------
+--15) Add medicine
+CREATE PROCEDURE Add_Medicine
+@medicineNo integer,
+@medicineName nvarchar(30),
+@expiry nvarchar(30),
+@quantity int,
+@price float
+AS
+BEGIN
+
+
+if(exists(select * from pharmacy
+		where medicineNo=@medicineNo ))
+	begin
+			update pharmacy
+			set quantity=@quantity+quantity
+			where medicineNo=@medicineNo
+		--increase quantity number
+	end
+	else
+	begin
+		
+		select @medicineNo = max(medicineNo) + 1 
+		from pharmacy
+
+		INSERT INTO pharmacy
+         VALUES(@medicineNo, @medicineName,@expiry,@quantity,@price)
+	end
+end
+
+exec Add_Medicine @medicineNo = 0,@medicineName = 'glycerin', @expiry ='2-2-2024', @quantity = 20, @price = 600
+
+select* from pharmacy
+
+drop procedure Add_Medicine
+
+
+--14)remove medicine
+CREATE PROCEDURE Remove_Medicine
+@medicineNo integer
+AS
+BEGIN
+Delete from pharmacy where medicineNo=@medicineNo
+END
+
+exec Remove_Medicine @medicineNo = 5
+
+
+------------------------------------Delete Admin/patient/Doctor-----------------------------------
+
+create procedure ViewDoctor
+as begin
+
+	select* from doctor
+
+end
+
+exec ViewDoctor
 
 --7)
 create procedure DeleteDoctor
@@ -342,6 +659,17 @@ as begin
 
 end
 
+exec DeleteDoctor @id = 1
+
+select * from doctor
+
+create procedure viewpatient
+as begin
+select* from patient
+end
+
+exec viewpatient
+
  --8)
  create procedure DeletePatient
 @id int
@@ -351,6 +679,15 @@ as begin
 	where Patient.id = @id
 
 end
+
+exec DeletePatient @id = 6
+
+create procedure viewAdmin
+as begin
+select * from admin
+end
+
+exec viewAdmin
 
 --9)
  create procedure DeleteAdmin
@@ -362,8 +699,14 @@ as begin
 
 end
 
---10)
-create procedure RatingDocs
+exec DeleteAdmin @id = 4
+
+
+
+-----------------------------------------------------------------procedures not connected---------------------------------------------------------------------------
+
+--19)
+ create procedure RatingDocs
 as begin
 	select avg(rating), d.name
 	from ratings r
@@ -371,6 +714,12 @@ as begin
 	on d.id = r.docID
 	group by r.docID, d.name
 end
+
+exec RatingDocs 
+
+
+
+
 
 --11)
 create procedure PremiumDocs
@@ -388,53 +737,15 @@ as begin
 	)
 end
 
---12)
-create procedure makeAppointment
-@patientID int,
-@doctorID int,
-@doctorName nvarchar,
-@patientName nvarchar,
-@phoneNo nvarchar,
-@dept nvarchar,
-@room int,
-@time time
 
-as begin
-declare @appointmentID int
-select @appointmentID = max(@appointmentID) + 1
-from [Appointments] app
-insert into [Appointments] values (@appointmentID, @doctorID, @patientID, @time,  @doctorName, @patientName, @phoneNo, @dept, @room)
+--16)expired medicine nefiunerin 
+CREATE PROCEDURE expired_Medicine
+AS
+BEGIN
 
-end
-
---13)
-create procedure searchAppointment
-@patientID int
-
-as begin
-select * from [Appointments] a
-where @patientID = a.patientID
-end
-
-select * from laboratory
-create procedure labTest
-@patientID int,
-@labno int,
-@testTime time,
-@testDescription nvarchar,
-@status int,
-@amount int
-as begin
-
-declare @testID int
-select @testID = max(@testID) + 1
-from [laboratory] lab
-
-insert into [laboratory] values (@testID, @labno, @testTime, @testDescription, @status, @amount, @patientID)
-
-end
-
-
+      Delete from pharmacy  
+	  where expiry < GETDATE()
+END
 
 
 --14) details of doctor by using doctor id 
@@ -446,46 +757,7 @@ select * from Doctor where id=@id_of_doctor
 END
 
 
---15) Add medicine
-CREATE PROCEDURE Add_Medicine
-@medicineNo integer,
-@expiry date,
-@quantity int,
-@price float
-AS
-BEGIN 
-if(exists(select * from pharmacy
-		where medicineNo=@medicineNo ))
-	begin
-			update pharmacy
-			set @quantity=@quantity+1
-			where quantity=@quantity
-		--increase quantity number
-	end
-	else
-	begin
-		INSERT INTO pharmacy(medicineNo,expiry,quantity,price)
-         VALUES(@medicineNo,@expiry,@quantity,@price)
-	end
-end
- 
---14)remove medicine
-CREATE PROCEDURE Remove_Medicine
-@medicineNo integer
-AS
-BEGIN
-Delete from pharmacy where medicineNo=@medicineNo
-END
 
-
---16)expired medicine nefiunerin 
-CREATE PROCEDURE expired_Medicine
-AS
-BEGIN
-
-      Delete from pharmacy  
-	  where expiry < GETDATE()
-END
 
 
 --17)
@@ -502,15 +774,7 @@ END
 
  
  --18)
- create procedure patient_EHR
- @patient_id int
- as begin
-
- select*
- from EHR
- where EHR.patientID = @patient_id
-
- end
+ 
 
  --19)
 
@@ -524,16 +788,7 @@ END
 
  end
 
--- 20)
-	create procedure enterEHR
-	@patid int,
-	@diag text,
-	@testid int,
-	@medno int
-	as begin
-	insert into EHR values (@patid, @diag, @testid,@medno)
 
-	end
 
 
 
