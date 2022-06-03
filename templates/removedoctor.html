@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}
+    Remove Doctor
+{% endblock %}
+
+{% block content %}
+    
+
+<form action="" method = "POST">
+    <div class="form-group row">
+        <label for="id">Doctor id</label>
+        <input type="text" class="form-control" name="id" id="id">
+    </div>
+    
+    <button type="btnAdd" class="btn btn-primary">Submit</button>
+    <a href="/" class="btn btn-primary">Cancel</a>
+</form>
+
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <!-- Your Columns HERE -->
+            <th scope="col">id</th>
+            <th scope="col">name</th>
+            <th scope="col">cnic</th>
+            <th scope="col">phoneNumber</th>
+            <th scope="col">age</th>
+            <th scope="col">timings</th>
+            <th scope="col">email</th>
+            <th scope="col">departmentName</th>
+            <th scope="col">gender</th>
+            <th scope="col">roomNo</th>
+            <th scope="col">password</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Your rows inside the table HERE: -->
+        {% for n in items %}
+            <tr>
+                <td>{{ n.id }}</td>
+                <td>{{ n.name }}</td>
+                <td>{{ n.cnic }}</td>
+                <td>{{ n.phoneNumber }}</td>
+                <td>Rs. {{ n.age }}</td>
+                <td>Rs. {{ n.timings }}</td>
+                <td>Rs. {{ n.email }}</td>
+                <td>Rs. {{ n.departmentName }}</td>
+                <td>Rs. {{ n.gender }}</td>
+                <td>Rs. {{ n.roomNo }}</td>
+                <td>Rs. {{ n.password }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

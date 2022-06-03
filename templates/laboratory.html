@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+    Laboratory Page
+{% endblock %}
+
+{% block content %}
+    
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <!-- Your Columns HERE -->
+            <th scope="col">Test ID</th>
+            <th scope="col">Lab Number</th>
+            <th scope="col">Test Description</th>
+            <th scope="col">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Your rows inside the table HERE: -->
+        {% for n in items %}
+            <tr>
+                <td>{{ n.testID }}</td>
+                <td>{{ n.labNo }}</td>
+                <td>{{ n.testDescription }}</td>
+                <td>Rs. {{ n.amount }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+    Doctor Page
+{% endblock %}
+
+{% block content %}s
+
+<h3> Doctor Menu </h3>
+     <br />
+<a href="{{ url_for('ehr_patient_input') }}" class="button"> Add EHR </a> 
+     <br /><br /><br />
+     <br />
+<a href=" {{ url_for('order_labtest') }}" class="button"> Order Lab Test</a>
+     <br /><br /><br />
+     <br />
+<a href="write url of View Details" class="button"> View Details</a>
+     <br /><br /><br />
+     <br />
+    
+{% endblock %}

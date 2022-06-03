@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}
+    Search Appointments Page
+{% endblock %}
+
+{% block content %}
+    
+
+<form action="" method = "POST">
+    <div class="form-group row">
+        <label for="userid">Patient ID</label>
+        <input type="text" class="form-control" name="userid" id="userid">
+    </div>
+    
+    <button type="btnAdd" class="btn btn-primary">Submit</button>
+    <a href="/" class="btn btn-primary">Cancel</a>
+</form>
+
+
+
+<br></br>
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <!-- Your Columns HERE -->
+            <th scope="col">AppointmentID</th>
+            <th scope="col">Patient Name</th>
+            <th scope="col">Doctor Name</th>
+            <th scope="col">Department</th>
+            <th scope="col">Appointment Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Your rows inside the table HERE: -->
+        {% for n in items %}
+            <tr>
+                <td>{{ n.appointmentID }}</td>
+                <td>{{ n.patientName }}</td>
+                <td>{{ n.DoctorName }}</td>
+                <td>{{ n.Department }}</td>
+                <td>{{ n.appointmentTime }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    
+{% endblock %}

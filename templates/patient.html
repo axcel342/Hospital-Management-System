@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}
+    Patient Page
+{% endblock %}
+
+{% block content %}
+    
+<h3> Patient Menu </h3>
+  <br /><br />
+<a href="{{ url_for('ehr_patient') }}" class="button"> Patient EHR </a> 
+
+     <br /><br /><br />
+     <br />
+<a href="{{ url_for('search_appointment') }}" class="button"> Search Appointment</a>
+     <br /><br /><br />
+     <br />
+<a href="http://localhost:64635/WebForm6.aspx" class="button"> Our Premium Doctors</a>
+     <br /><br /><br />
+     <br />
+<a href="http://localhost:64635/WebForm5.aspx" class="button"> Rate the Doctor</a>
+     <br /><br /><br />
+     <br />
+
+   
+    
+{% endblock %}
+

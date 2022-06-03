@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}
+    EHR Page
+{% endblock %}
+
+{% block content %}
+    
+
+<form action="" method = "POST">
+    <div class="form-group row">
+        <label for="userid">Userid</label>
+        <input type="text" class="form-control" name="userid" id="userid">
+    </div>
+    
+    <button type="btnAdd" class="btn btn-primary">Submit</button>
+    <a href="/" class="btn btn-primary">Cancel</a>
+</form>
+
+
+
+<br></br>
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <!-- Your Columns HERE -->
+            <th scope="col">ID</th>
+            <th scope="col">diagnosis</th>
+            <th scope="col">testid</th>
+            <th scope="col">medicineNo</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Your rows inside the table HERE: -->
+        {% for n in items %}
+            <tr>
+                <td>{{ n.patient_id }}</td>
+                <td>{{ n.diagnosis }}</td>
+                <td>{{ n.testID }}</td>
+                <td>{{ n.medicineNo }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    
+{% endblock %}

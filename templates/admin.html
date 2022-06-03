@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}
+    Admin Page
+{% endblock %}
+
+{% block content %}
+    
+This is Admin page
+
+<h3> Admin Menu Page </h3>
+     <br />
+<a href=" {{ url_for('signup_admin') }}" class="button">Sign Up Admin </a> 
+     <br /><br /><br />
+     <br />
+<a href=" {{ url_for('adddoctor') }}" class="button">Sign Up Doctor</a>
+     <br /><br /><br />
+     <br />
+<a href="{{ url_for('addpatient') }}" class="button">Sign Up Patient</a>
+     <br /><br /><br />
+     <br />
+    <a href="{{ url_for('make_appointment') }}" class="button">Make Appointment</a>
+     <br /><br /><br />
+     <br />
+     <a href="{{ url_for('remove_appointment') }}" class="button">Remove Appointment</a>
+     <br /><br /><br />
+     <br />
+    <a href="{{ url_for('remove_admin') }}" class="button">Delete Admin</a>
+     <br /><br /><br />
+     <br />
+    <a href="{{ url_for('removedoctor') }}" class="button">Delete Doctor</a>
+     <br /><br /><br />
+     <br />
+     <a href="{{ url_for('removepatient') }}" class="button">Delete Patient</a>
+     <br /><br /><br />
+     <br />
+    <a href="{{ url_for('addmedicine') }}" class="button">Add Medicine</a>
+     <br /><br /><br />
+     <br />
+    <a href="{{ url_for('remove_medicine') }}" class="button">Remove Medicine</a>
+     <br /><br /><br />
+     <br />
+    <!-- <a href="write url of Expired Medicine" class="button">Expired Medicine</a>
+     <br /><br /><br />
+     <br /> -->
+    <a href="write url of Available Rooms" class="button">Available Rooms</a>
+     <br /><br /><br />
+     <br />
+    <a href="write url of Available Operation Theatrs" class="button">Available Operation Theaters</a>
+     <br /><br /><br />
+     <br />
+     <a href="{{ url_for('addtest') }}" class="button">Add laboratory test</a>
+     <br /><br /><br />
+     <br />
+     <a href="{{ url_for('removetest') }}" class="button">Remove laboratory test</a>
+
+
+{% endblock %}

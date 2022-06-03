@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+    Remove Appointment
+{% endblock %}
+
+{% block content %}
+    
+
+<form action="" method = "POST">
+    <div class="form-group row">
+        <label for="id">Appointment id</label>
+        <input type="text" class="form-control" name="id" id="id">
+    </div>
+    
+    <button type="btnAdd" class="btn btn-primary">Submit</button>
+    <a href="/" class="btn btn-primary">Cancel</a>
+</form>
+
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <!-- Your Columns HERE -->
+            <th scope="col">Appointment Id</th>
+            <th scope="col">Doctor ID</th>
+            <th scope="col">Patient ID</th>
+            <th scope="col">Appointment Time</th>
+            <th scope="col">Patient Name</th>
+            <th scope="col">Patient Phone</th>
+            <th scope="col">Department Id</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Your rows inside the table HERE: -->
+        {% for n in items %}
+            <tr>
+                <td>{{ n.appointmentid }}</td>
+                <td>{{ n.doctorID }}</td>
+                <td>{{ n.patientID }}</td>
+                <td>{{ n.appointmentTime }}</td>
+                <td>{{ n.patientName }}</td>
+                <td>{{ n.patientPhone }}</td>
+                <td>{{ n.departmentid }}</td>
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

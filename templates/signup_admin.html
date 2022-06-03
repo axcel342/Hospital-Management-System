@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}
+    Admin Signup Page
+{% endblock %}
+
+{% block content %}
+<h2>Admin Details</h2>
+
+<form action="" method = "POST">
+    <div class="form-group row">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" name="name" id="name">
+    </div>
+    <div class="form-group row">
+        <label for="cnic">cnic</label>
+        <input type="text" class="form-control" name="cnic" id="cnic">
+    </div>
+
+   
+    <div class="form-group row">
+        <label for="phoneNumber">phoneNumber</label>
+        <input type="text" class="form-control" name="phoneNumber" id="phoneNumber">
+    </div>
+
+    <div class="form-group row">
+        <label for="age">age</label>
+        <input type="text" class="form-control" name="age" id="age">
+    </div>
+   
+    <div class="form-group row">
+        <label for="email">email </label>
+        <input type="text" class="form-control" name="email" id="email">
+    </div>
+
+    <div class="form-group row">
+        <label for="password">password</label>
+        <input type="text" class="form-control" name="password" id="password">
+    </div>
+    
+
+    <button type="btnAdd" class="btn btn-primary">Submit</button>
+    <a href="/" class="btn btn-primary">Cancel</a>
+  </form>
+
+
+    
+{% endblock %}
+<style>
+    body {
+    background-color: #212121;
+    color: white
+    }
+ </style>
+

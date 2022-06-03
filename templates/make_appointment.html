@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}
+    Appointment Page
+{% endblock %}
+
+{% block content %}
+    
+<form action="" method = "POST">
+    <div class="form-group row">
+        <label for="patientid">Patient id</label>
+        <input type="text" class="form-control" name="patientid" id="patientid">
+    </div>
+
+    <div class="form-group row">
+        <label for="doctorID">Doctor ID</label>
+        <input type="text" class="form-control" name="doctorID" id="doctorID">
+    </div>
+
+    <div class="form-group row">
+        <label for="patientName">Patient Name</label>
+        <input type="text" class="form-control" name="patientName" id="patientName">
+    </div>
+
+    <div class="form-group row">
+        <label for="phoneNo">Phone Number</label>
+        <input type="text" class="form-control" name="phoneNo" id="phoneNo">
+    </div>
+
+    <div class="form-group row">
+        <label for="dept">Department</label>
+        <input type="text" class="form-control" name="dept" id="dept">
+    </div>
+
+    <div class="form-group row">
+        <label for="time">Appointment Time</label>
+        <input type="text" class="form-control" name="time" id="time">
+    </div>
+
+    <button type="btnAdd" class="btn btn-primary">Submit</button>
+    <a href="/" class="btn btn-primary">Cancel</a>
+</form>
+
+
+    
+{% endblock %}
