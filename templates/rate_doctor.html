@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}
+    Add Rating
+{% endblock %}
+
+{% block content %}
+    
+
+<form action="" method = "POST">
+    <div class="form-group row">
+        <label for="id">Doctor id</label>
+        <input type="text" class="form-control" name="id" id="id">
+    </div>
+
+    <div class="form-group row">
+        <label for="rating">Doctor Rating</label>
+        <input type="text" class="form-control" name="rating" id="rating">
+    </div>
+    
+    <button type="btnAdd" class="btn btn-primary">Submit</button>
+    <a href="/" class="btn btn-primary">Cancel</a>
+</form>
+
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <!-- Your Columns HERE -->
+            <th scope="col">id</th>
+            <th scope="col">Rating</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Your rows inside the table HERE: -->
+        {% for n in items %}
+            <tr>
+                <td>{{ n.id }}</td>
+                <td>{{ n.Rating }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br /><br /><br />
+     <br />
+<a href=" {{ url_for('patient_menu') }}" class="button"> Patient Menu</a>
+     <br /><br /><br />
+     <br />
+
+{% endblock %}

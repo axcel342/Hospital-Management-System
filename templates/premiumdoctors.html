@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}
+    Premium Doctors
+{% endblock %}
+
+{% block content %}
+    
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <!-- Your Columns HERE -->
+            <th scope="col">Doctor id</th>
+            <th scope="col">Doctor name</th>
+            <th scope="col">Rating</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Your rows inside the table HERE: -->
+        {% for n in items %}
+            <tr>
+                <td>{{ n.docID }}</td>
+                <td>{{ n.docname }}</td>
+                <td>{{ n.Rating }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

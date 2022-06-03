@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}
+    View Doctor
+{% endblock %}
+
+{% block content %}
+    
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <!-- Your Columns HERE -->
+            <th scope="col">id</th>
+            <th scope="col">name</th>
+            <th scope="col">age</th>
+            <th scope="col">timings</th>
+            <th scope="col">email</th>
+            <th scope="col">departmentName</th>
+            <th scope="col">roomNo</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Your rows inside the table HERE: -->
+        {% for n in items %}
+            <tr>
+                <td>{{ n.id }}</td>
+                <td>{{ n.name }}</td>
+                <td>{{ n.age }}</td>
+                <td>{{ n.timings }}</td>
+                <td>{{ n.email }}</td>
+                <td>{{ n.departmentName }}</td>
+                <td>{{ n.roomNo }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br /><br /><br />
+     <br />
+<a href=" {{ url_for('patient_menu') }}" class="button"> Patient Menu</a>
+     <br /><br /><br />
+     <br />
+
+{% endblock %}
