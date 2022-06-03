@@ -76,6 +76,7 @@ drop table doctor
 
 
 
+
 create table [admin]
 (
   id int primary key,
@@ -205,11 +206,18 @@ drop table Appointments
 
 insert into Appointments valueS(1, 1, 2, '1400', 'asad', '4324423434242', 1)
 
+
+select* from doctor
+
+
 create table ratings
 (
 	docID int foreign key references Doctor(id) on delete cascade on update cascade,
 	rating float check (rating >= 0 AND rating <=5)
 )
+
+alter table ratings add docname nvarchar(30)
+
 
 insert into ratings values(1, 5.0)
 insert into ratings values(2, 4.0)
@@ -242,7 +250,23 @@ declare @id int
 	insert into Doctor values (@id,@name,@cnic,@phno,@age,@time,@email,@dept,@gender,@room,@password );
 end
 
+exec SignupDoctor @name = 'Ahmed',@cnic = '3520125634567',@phno = '03304556565',@age = 40,@time = '1000 - 1400',@email = 'ahmed@gmail.com',@dept = 3,@gender = 'M',@room = 4,@password = '1234567'
+
 drop procedure SignupDoctor
+
+select* from Department
+
+insert into Department values(2, 'opd', 4, 5)
+insert into Department values(3, 'opthamology', 2, 4)
+insert into Department values(4, 'sergion', 7, 1)
+
+
+
+select* from rooms
+
+insert into rooms values(4, 2, 'Not Available', 2)
+insert into rooms values(5, 4, 'Not Available', 2)
+insert into rooms values(1, 3, 'Not Available', 1)
 
 select* from Doctor
 
@@ -314,7 +338,7 @@ exec LoginPatient
 @id=1,@password='abcdefg',@flag = @out output
 select @out
 
-
+select * from Appointments
 
 create procedure SignupPatient
 @name varchar(20),
@@ -428,9 +452,11 @@ select* from [admin]
 
 	end
 
-	exec enterEHR @patid = 1, @diag = 'cough', @testid = 1, @medno = 1
+	exec enterEHR @patid = 2, @diag = 'lung disease', @testid = 2, @medno = 1
 
 	select * from EHR
+
+
 
 
 --18)
@@ -487,8 +513,10 @@ end
 
 select* from Appointments
 select* from Department
+select* from patient
+insert into Appointments values(1,1, 1, 'ahmed', '3008763421', 1, '1500')
 
-exec makeAppointment @patientID = 1, @doctorID = 1, @patientName = 'asad', @phoneNo = '03304256565', @dept = 1, @time = '1500'
+exec makeAppointment @patientID = 3, @doctorID = 2, @patientName = 'jamal', @phoneNo = '33249233242', @dept = 2, @time = '1030'
 
 drop procedure makeAppointment
 --------------------
@@ -659,7 +687,7 @@ as begin
 
 end
 
-exec DeleteDoctor @id = 1
+exec DeleteDoctor @id = 3
 
 select * from doctor
 
@@ -701,41 +729,83 @@ end
 
 exec DeleteAdmin @id = 4
 
+delete from EHR where patientID = 2
+select* from EHR
+------------------------------------------premiumdoctors / Rating docs---------------------------------------------------
 
+create procedure PatientViewDoctor
+as begin
 
------------------------------------------------------------------procedures not connected---------------------------------------------------------------------------
+	select d.id, d.name, d.age, d.timings, d.email, d.departmentName, d.roomNo
+	from doctor d
+
+end
+
+exec PatientViewDoctor
 
 --19)
- create procedure RatingDocs
+create procedure Rate_doctors
+@doctorid int,
+@rating float,
+@flag int output
+
 as begin
-	select avg(rating), d.name
+
+	if(exists(select* from doctor d where d.id = @doctorid ) )
+	begin
+	insert into ratings values(@doctorid, @rating)
+	set @flag = 1
+	end
+
+	else
+	begin
+	set @flag = 0
+	end
+
+end
+
+declare @out int
+exec Rate_doctors @doctorid = 3, @rating = 4.7, @flag = @out output 
+select @out as 'return_value'
+
+create procedure RatingDocs
+as begin
+	select d.id,avg(rating) as 'Rating'
 	from ratings r
 	join Doctor d
 	on d.id = r.docID
-	group by r.docID, d.name
+	group by d.id
 end
 
 exec RatingDocs 
 
+drop procedure RatingDocs
 
-
-
+select* from Doctor
+select* from ratings
 
 --11)
 create procedure PremiumDocs
 as begin
 
-	select docID,avg(rating)
+	select docID, docname,avg(rating) as 'Rating'
 	from ratings
-	group by docID
-	having avg(rating)=
-	(
-	select top 1 avg(rating)
-	from ratings r
-	group by r.docID
-	order by avg(rating) desc
-	)
+	group by docID, docname
+	having avg(rating) > 3.5
+
 end
+
+drop procedure PremiumDocs
+
+exec PremiumDocs
+
+
+
+
+-----------------------------------------------------------------procedures not connected---------------------------------------------------------------------------
+
+
+
 
 
 --16)expired medicine nefiunerin 
@@ -771,6 +841,8 @@ END
  end
 
  exec available_rooms
+
+ select* from rooms
 
  
  --18)
